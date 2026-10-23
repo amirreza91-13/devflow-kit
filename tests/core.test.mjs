@@ -35,3 +35,5 @@ test("regex reports when the result cap truncates matches",()=>{const r=c.findRe
 test("diff handles empty strings and preserves trailing empty lines",()=>{assert.deepEqual(c.diffLines("",""),[{type:"same",text:""}]);assert.deepEqual(c.diffLines("a\n","a").map(x=>[x.type,x.text]),[["same","a"],["removed",""]])});
 test("HTML entity decoder preserves invalid Unicode scalar references",()=>{assert.equal(c.decodeHTMLEntities("&#xD800; &#x110000; &#0;"),"&#xD800; &#x110000; \u0000")});
 test("color converter normalizes HSL hue and rejects invalid saturation",()=>{assert.equal(c.parseColor("hsl(-120, 100%, 50%)").hex,"#0000FF");assert.throws(()=>c.parseColor("hsl(0, 101%, 50%)"))});
+
+test("JWT decoder rejects non-Base64URL segments and accepts an empty signature segment",()=>{const b64=s=>Buffer.from(s).toString("base64url");const header=b64("{}"),payload=b64('{"sub":"demo"}');assert.equal(c.decodeJWT(header+"."+payload+".").signature,"");assert.throws(()=>c.decodeJWT(header+"."+payload+".!"));assert.throws(()=>c.decodeJWT(header+"=."+payload+".sig"));assert.throws(()=>c.decodeJWT("a."+payload+".sig"))});
