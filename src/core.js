@@ -15,14 +15,14 @@ export function decodeHTMLEntities(s){return s.replace(/&(#x[\da-f]+|#\d+|amp|lt
 export function parseColor(input){
   const value=String(input).trim();
   let r,g,b,m;
-  if((m=value.match(/^#?([\\da-f]{3})$/i))){
+  if((m=value.match(/^#?([\da-f]{3})$/i))){
     [r,g,b]=[...m[1]].map(x=>parseInt(x+x,16));
-  }else if((m=value.match(/^#?([\\da-f]{6})$/i))){
+  }else if((m=value.match(/^#?([\da-f]{6})$/i))){
     [r,g,b]=[m[1].slice(0,2),m[1].slice(2,4),m[1].slice(4,6)].map(x=>parseInt(x,16));
-  }else if((m=value.match(/^rgb\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)$/i))){
+  }else if((m=value.match(/^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i))){
     [r,g,b]=m.slice(1).map(Number);
     if([r,g,b].some(x=>x>255))throw Error("RGB channels must be 0–255.");
-  }else if((m=value.match(/^hsl\\(\\s*(-?(?:\\d+(?:\\.\\d*)?|\\.\\d+))\\s*,\\s*(\\d+(?:\\.\\d*)?|\\.\\d+)%\\s*,\\s*(\\d+(?:\\.\\d*)?|\\.\\d+)%\\s*\\)$/i))){
+  }else if((m=value.match(/^hsl\(\s*(-?(?:\d+(?:\.\d*)?|\.\d+))\s*,\s*(\d+(?:\.\d*)?|\.\d+)%\s*,\s*(\d+(?:\.\d*)?|\.\d+)%\s*\)$/i))){
     let h=Number(m[1]),sat=Number(m[2]),light=Number(m[3]);
     if(!Number.isFinite(h)||!Number.isFinite(sat)||!Number.isFinite(light)||sat<0||sat>100||light<0||light>100)throw Error("HSL requires saturation and lightness between 0% and 100%.");
     h=((h%360)+360)%360/360;sat/=100;light/=100;
