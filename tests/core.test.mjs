@@ -25,3 +25,13 @@ test("color converter accepts HSL, wraps hue, and normalizes grayscale",()=>{ass
 test("color converter rejects invalid HSL ranges and syntax",()=>{assert.throws(()=>c.parseColor("hsl(0, 101%, 50%)"),/HSL/);assert.throws(()=>c.parseColor("hsl(0, 50%, -1%)"));assert.throws(()=>c.parseColor("hsl(nope, 50%, 50%)"),/Use #RGB/);assert.throws(()=>c.parseColor("rgb(9999, 0, 0)"))});
 
 test("timestamp rejects unsupported units instead of silently treating them as milliseconds",()=>{assert.throws(()=>c.convertTimestamp("1","minutes"),/Unit must/);assert.throws(()=>c.convertTimestamp("1",""),/Unit must/)});
+
+test("URL decoder rejects malformed percent escapes",()=>{assert.throws(()=>c.decodeURL("%E0%A4%A"),URIError)});
+test("JWT decoder rejects malformed JSON and invalid UTF-8",()=>{const b64=s=>Buffer.from(s).toString("base64url");assert.throws(()=>c.decodeJWT([b64("{}"),b64("{"),"sig"].join(".")));assert.throws(()=>c.decodeJWT([b64("{}"),"_w","sig"].join(".")))});
+test("UUID generator validates counts and has a secure fallback",()=>{for(const n of [0,-1,1.5,101])assert.throws(()=>c.generateUUIDs(n));const provider={getRandomValues(bytes){bytes.fill(0);return bytes}};const id=c.generateUUIDs(1,provider)[0];assert.match(id,/^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-8[\da-f]{3}-[\da-f]{12}$/i)});
+test("Base64 decoder rejects malformed padding and invalid UTF-8",()=>{assert.throws(()=>c.decodeBase64UTF8("YQ="));assert.throws(()=>c.decodeBase64UTF8("/w=="))});
+test("case converter handles empty input and rejects unknown styles",()=>{assert.equal(c.convertCase("   ","camel"),"");assert.equal(c.convertCase("HTTPResponse","snake"),"http_response");assert.throws(()=>c.convertCase("hello","unknown"))});
+test("regex reports when the result cap truncates matches",()=>{const r=c.findRegexMatches("a","g","a".repeat(1500));assert.equal(r.matches.length,1000);assert.equal(r.truncated,true)});
+test("diff handles empty strings and preserves trailing empty lines",()=>{assert.deepEqual(c.diffLines("",""),[{type:"same",text:""}]);assert.deepEqual(c.diffLines("a\n","a").map(x=>[x.type,x.text]),[["same","a"],["removed",""]])});
+test("HTML entity decoder preserves invalid Unicode scalar references",()=>{assert.equal(c.decodeHTMLEntities("&#xD800; &#x110000; &#0;"),"&#xD800; &#x110000; \u0000")});
+test("color converter normalizes HSL hue and rejects invalid saturation",()=>{assert.equal(c.parseColor("hsl(-120, 100%, 50%)").hex,"#0000FF");assert.throws(()=>c.parseColor("hsl(0, 101%, 50%)"))});
