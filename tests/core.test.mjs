@@ -23,3 +23,5 @@ test("line diff enforces its work limit",()=>{assert.throws(()=>c.diffLines(Arra
 
 test("color converter accepts HSL, wraps hue, and normalizes grayscale",()=>{assert.equal(c.parseColor("hsl(0, 100%, 50%)").hex,"#FF0000");assert.equal(c.parseColor("hsl(120, 100%, 25%)").hex,"#008000");assert.equal(c.parseColor("hsl(240, 100%, 50%)").hex,"#0000FF");assert.equal(c.parseColor("hsl(360, 100%, 50%)").hex,"#FF0000");assert.equal(c.parseColor("hsl(0, 0%, 50%)").hex,"#808080")});
 test("color converter rejects invalid HSL ranges and syntax",()=>{assert.throws(()=>c.parseColor("hsl(0, 101%, 50%)"),/HSL/);assert.throws(()=>c.parseColor("hsl(0, 50%, -1%)"));assert.throws(()=>c.parseColor("hsl(nope, 50%, 50%)"),/Use #RGB/);assert.throws(()=>c.parseColor("rgb(9999, 0, 0)"))});
+
+test("timestamp rejects unsupported units instead of silently treating them as milliseconds",()=>{assert.throws(()=>c.convertTimestamp("1","minutes"),/Unit must/);assert.throws(()=>c.convertTimestamp("1",""),/Unit must/)});
