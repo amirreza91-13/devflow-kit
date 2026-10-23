@@ -42,9 +42,11 @@ $("tool-panel").innerHTML='<div class="tool-heading"><div class="tool-title-wrap
 const show=(value,error=false)=>{const el=$("output");el.textContent=typeof value==="string"?value:JSON.stringify(value,null,2);el.classList.toggle("error",error)};
 const run=(id,fn)=>{const b=$(id);if(b)b.addEventListener("click",()=>{try{show(fn())}catch(e){show(e.message||String(e),true)}})};
 run("format",()=>core.formatJSON($("input").value));run("minify",()=>core.formatJSON($("input").value,true));
+if(active==="url"||active==="base64"||active==="html"){
 run("encode",()=>active==="url"?core.encodeURL($("input").value):active==="base64"?core.encodeBase64UTF8($("input").value):core.encodeHTMLEntities($("input").value));
 run("decode",()=>active==="url"?core.decodeURL($("input").value):active==="base64"?core.decodeBase64UTF8($("input").value):core.decodeHTMLEntities($("input").value));
-run("decode",()=>{const v=core.decodeJWT($("input").value);return "HEADER\n"+JSON.stringify(v.header,null,2)+"\n\nPAYLOAD\n"+JSON.stringify(v.payload,null,2)+"\n\nSIGNATURE\n"+v.signature+"\n\nNot verified."});
+}
+if(active==="jwt")run("decode",()=>{const v=core.decodeJWT($("input").value);return "HEADER\n"+JSON.stringify(v.header,null,2)+"\n\nPAYLOAD\n"+JSON.stringify(v.payload,null,2)+"\n\nSIGNATURE\n"+v.signature+"\n\nNot verified."});
 run("generate",()=>core.generateUUIDs(Number($("count").value)).join("\n"));
 run("convert",()=>active==="time"?core.convertTimestamp($("input").value,$("unit").value):active==="case"?core.convertCase($("input").value,$("style").value):core.parseColor($("input").value));
 run("now",()=>{ $("input").value=$("unit").value==="s"?Math.floor(Date.now()/1000):Date.now();return core.convertTimestamp($("input").value,$("unit").value)});
