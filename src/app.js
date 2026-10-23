@@ -55,7 +55,8 @@ if(regexButton)regexButton.addEventListener("click",()=>{
   const pattern=$("pattern").value,flags=$("flags").value,textValue=$("input").value;
   if(pattern.length>500||textValue.length>100000){show("Pattern limit: 500 characters. Input limit: 100,000 characters.",true);return}
   regexButton.disabled=true;regexButton.textContent="Testing…";
-  const worker=new Worker(new URL("./regex-worker.js",import.meta.url),{type:"module"});
+  let worker;
+  try{worker=new Worker(new URL("./regex-worker.js",import.meta.url),{type:"module"})}catch(error){regexButton.disabled=false;regexButton.textContent="Find matches";show("Regex Worker could not start in this browser context. Try a modern browser and a local HTTP server.",true);return}
   let finished=false;
   const finish=(value,error=false)=>{if(finished)return;finished=true;clearTimeout(timer);worker.terminate();regexButton.disabled=false;regexButton.textContent="Find matches";show(value,error)};
   const timer=setTimeout(()=>finish("Regex evaluation timed out (500 ms). Try a simpler pattern or smaller input.",true),500);
