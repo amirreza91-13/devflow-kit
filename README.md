@@ -83,7 +83,7 @@ devflow-kit/
 
 ## GitHub Pages
 
-The workflow runs syntax checks and unit tests before deployment on pushes to main. To publish, open **Settings → Pages** and select **GitHub Actions** as the source if it is not already enabled. The first deployment can take a few minutes.
+The current GitHub Actions workflow runs syntax checks and unit tests on pushes to `main` and pull requests. It does **not** deploy the site. Publishing through GitHub Pages still requires enabling Pages in repository settings and adding a deployment workflow.
 
 ## Current quality status
 
