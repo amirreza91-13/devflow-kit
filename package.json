@@ -1,0 +1,9 @@
+{
+  "name": "devflow-kit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Privacy-first browser-based developer utilities",
+  "type": "module",
+  "scripts": { "test": "node --test", "check": "node --check src/app.js && node --check src/core.js" },
+  "engines": { "node": ">=20" }
+}
