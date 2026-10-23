@@ -15,3 +15,8 @@ test("HTML entities round-trip supported characters",()=>{const s="<tag a='x'>&"
 test("color converter supports short hex and rgb",()=>{assert.deepEqual(c.parseColor("#fff"),{hex:"#FFFFFF",rgb:"rgb(255, 255, 255)",hsl:"hsl(0, 0%, 100%)"});assert.equal(c.parseColor("rgb(0, 0, 0)").hex,"#000000");assert.throws(()=>c.parseColor("#ggg"))});
 test("markdown preview strips formatting without interpreting HTML",()=>{assert.equal(c.markdownToPlainPreview("# **Hello**"),"Hello");assert.equal(c.markdownToPlainPreview("<script>alert(1)</script>"),"<script>alert(1)</script>")});
 test("HTTP reference contains common codes",()=>{assert.ok(c.HTTP_STATUS.some(x=>x[0]===404));assert.ok(c.HTTP_STATUS.some(x=>x[0]===429))});
+test("regex handles zero-length global matches without looping forever",()=>{const result=c.findRegexMatches("(?=a)","g","aaa");assert.equal(result.matches.length,3);assert.deepEqual(result.matches.map(x=>x.index),[0,1,2])});
+test("regex enforces input limits and rejects invalid flags",()=>{assert.throws(()=>c.findRegexMatches("a".repeat(501),"","x"),/500/);assert.throws(()=>c.findRegexMatches("a","","x".repeat(100001)),/100,000/);assert.throws(()=>c.findRegexMatches("a","gg","a"))});
+test("timestamp rejects blank and out-of-range values",()=>{assert.throws(()=>c.convertTimestamp("   "));assert.throws(()=>c.convertTimestamp("1e100","ms"))});
+test("color converter rejects out-of-range RGB channels",()=>{assert.throws(()=>c.parseColor("rgb(256, 0, 0)"),/0–255/);assert.throws(()=>c.parseColor("rgb(-1, 0, 0)"))});
+test("line diff enforces its work limit",()=>{assert.throws(()=>c.diffLines(Array(250).fill("a").join("\n"),Array(250).fill("b").join("\n")),/too large/i)});
