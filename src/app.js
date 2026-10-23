@@ -10,7 +10,7 @@ const tools=[
 ["regex",".*","Inspect","Regex Tester","Find matches and capture groups for a pattern."],
 ["diff","±","Compare","Text Diff","Compare two texts line by line."],
 ["html","<>","Encode","HTML Entity Converter","Encode or decode common HTML entities."],
-["color","#","Convert","CSS Color Converter","Convert HEX or RGB input to HEX, RGB and HSL."],
+["color","#","Convert","CSS Color Converter","Convert HEX, RGB or HSL input to HEX, RGB and HSL."],
 ["markdown","M↓","Preview","Markdown Preview","Preview a safe, deliberately small Markdown subset."],
 ["http","↔","Reference","HTTP Status Codes","Search a curated list of common HTTP response codes."]
 ].map(([id,icon,group,name,desc])=>({id,icon,group,name,desc}));
