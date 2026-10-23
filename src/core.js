@@ -12,5 +12,30 @@ export function findRegexMatches(pattern,flags,text,limit=1000){if(pattern.lengt
 export function diffLines(aText,bText,maxCells=40000){const a=aText.split("\n"),b=bText.split("\n");if((a.length+1)*(b.length+1)>maxCells)throw RangeError("Text too large for line diff.");const dp=Array.from({length:a.length+1},()=>new Uint32Array(b.length+1));for(let i=a.length-1;i>=0;i--)for(let j=b.length-1;j>=0;j--)dp[i][j]=a[i]===b[j]?1+dp[i+1][j+1]:Math.max(dp[i+1][j],dp[i][j+1]);const out=[];let i=0,j=0;while(i<a.length&&j<b.length){if(a[i]===b[j]){out.push({type:"same",text:a[i++]});j++}else if(dp[i+1][j]>=dp[i][j+1])out.push({type:"removed",text:a[i++]});else out.push({type:"added",text:b[j++]})}while(i<a.length)out.push({type:"removed",text:a[i++]});while(j<b.length)out.push({type:"added",text:b[j++]});return out}
 export function encodeHTMLEntities(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
 export function decodeHTMLEntities(s){return s.replace(/&(#x[\da-f]+|#\d+|amp|lt|gt|quot|apos|#39);/gi,(e,n)=>{const x=n.toLowerCase();if(x==="amp")return"&";if(x==="lt")return"<";if(x==="gt")return">";if(x==="quot")return'"';if(x==="apos"||x==="#39")return"'";const cp=x.startsWith("#x")?parseInt(x.slice(2),16):Number(x.slice(1));return Number.isInteger(cp)&&cp>=0&&cp<=0x10ffff&&!(cp>=0xd800&&cp<=0xdfff)?String.fromCodePoint(cp):e})}
-export function parseColor(s){let r,g,b,m;s=s.trim();if((m=s.match(/^#?([\da-f]{3})$/i)))[r,g,b]=[...m[1]].map(x=>parseInt(x+x,16));else if((m=s.match(/^#?([\da-f]{6})$/i)))[r,g,b]=[m[1].slice(0,2),m[1].slice(2,4),m[1].slice(4,6)].map(x=>parseInt(x,16));else if((m=s.match(/^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i))){[r,g,b]=m.slice(1).map(Number);if([r,g,b].some(x=>x>255))throw Error("RGB channels must be 0–255")}else throw Error("Use #RGB, #RRGGBB, or rgb(r, g, b).");const[R,G,B]=[r,g,b].map(x=>x/255),max=Math.max(R,G,B),min=Math.min(R,G,B),d=max-min,l=(max+min)/2;let h=0,sat=0;if(d){sat=d/(1-Math.abs(2*l-1));if(max===R)h=60*(((G-B)/d)%6);else if(max===G)h=60*((B-R)/d+2);else h=60*((R-G)/d+4)}h=(h+360)%360;return{hex:"#"+[r,g,b].map(x=>x.toString(16).padStart(2,"0")).join("").toUpperCase(),rgb:`rgb(${r}, ${g}, ${b})`,hsl:`hsl(${Math.round(h)}, ${Math.round(sat*100)}%, ${Math.round(l*100)}%)`}}
+export function parseColor(input){
+  const value=String(input).trim();
+  let r,g,b,m;
+  if((m=value.match(/^#?([\\da-f]{3})$/i))){
+    [r,g,b]=[...m[1]].map(x=>parseInt(x+x,16));
+  }else if((m=value.match(/^#?([\\da-f]{6})$/i))){
+    [r,g,b]=[m[1].slice(0,2),m[1].slice(2,4),m[1].slice(4,6)].map(x=>parseInt(x,16));
+  }else if((m=value.match(/^rgb\\(\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*,\\s*(\\d{1,3})\\s*\\)$/i))){
+    [r,g,b]=m.slice(1).map(Number);
+    if([r,g,b].some(x=>x>255))throw Error("RGB channels must be 0–255.");
+  }else if((m=value.match(/^hsl\\(\\s*(-?(?:\\d+(?:\\.\\d*)?|\\.\\d+))\\s*,\\s*(\\d+(?:\\.\\d*)?|\\.\\d+)%\\s*,\\s*(\\d+(?:\\.\\d*)?|\\.\\d+)%\\s*\\)$/i))){
+    let h=Number(m[1]),sat=Number(m[2]),light=Number(m[3]);
+    if(!Number.isFinite(h)||!Number.isFinite(sat)||!Number.isFinite(light)||sat<0||sat>100||light<0||light>100)throw Error("HSL requires saturation and lightness between 0% and 100%.");
+    h=((h%360)+360)%360/360;sat/=100;light/=100;
+    const hue=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};
+    if(sat===0){r=g=b=Math.round(light*255)}else{
+      const q=light<.5?light*(1+sat):light+sat-light*sat,p=2*light-q;
+      r=Math.round(hue(p,q,h+1/3)*255);g=Math.round(hue(p,q,h)*255);b=Math.round(hue(p,q,h-1/3)*255);
+    }
+  }else throw Error("Use #RGB, #RRGGBB, rgb(r, g, b), or hsl(h, s%, l%).");
+  const [R,G,B]=[r,g,b].map(x=>x/255),max=Math.max(R,G,B),min=Math.min(R,G,B),d=max-min,l=(max+min)/2;
+  let h=0,sat=0;
+  if(d){sat=d/(1-Math.abs(2*l-1));if(max===R)h=60*(((G-B)/d)%6);else if(max===G)h=60*((B-R)/d+2);else h=60*((R-G)/d+4)}
+  h=(h+360)%360;
+  return{hex:"#"+[r,g,b].map(x=>x.toString(16).padStart(2,"0")).join("").toUpperCase(),rgb:`rgb(${r}, ${g}, ${b})`,hsl:`hsl(${Math.round(h)}, ${Math.round(sat*100)}%, ${Math.round(l*100)}%)`};
+}
 export function markdownToPlainPreview(s){return s.split("\n").map(x=>x.replace(/^\s{0,3}#{1,6}\s+/,"").replace(/^\s*[-*+]\s+/,"• ").replace(/^\s*>\s?/,"│ ").replace(/\*\*(.+?)\*\*/g,"$1").replace(/__(.+?)__/g,"$1").replace(/\*(.+?)\*/g,"$1").replace(/_(.+?)_/g,"$1").replace(/`([^`]+)`/g,"$1").replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,"$1 ($2)")).join("\n")}
