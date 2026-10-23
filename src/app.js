@@ -31,11 +31,11 @@ case"uuid":body=select("Quantity","count",[[1,"1 UUID"],[5,"5 UUIDs"],[10,"10 UU
 case"base64":body=field("Text or Base64 input","input","Hello, world! 🌱")+actions([["encode","Encode UTF-8",true],["decode","Decode UTF-8"]])+result();break;
 case"time":body=field("Unix timestamp","input",String(Math.floor(Date.now()/1000)),false)+select("Unit","unit",[["s","Seconds"],["ms","Milliseconds"]])+actions([["convert","Convert timestamp",true],["now","Use current time"]])+result();break;
 case"case":body=field("Text","input","hello world_devflow-kit",false)+select("Naming style","style",[["camel","camelCase"],["pascal","PascalCase"],["snake","snake_case"],["kebab","kebab-case"],["constant","CONSTANT_CASE"]])+actions([["convert","Convert text",true]])+result();break;
-case"regex":body=field("Regular expression","pattern","\\b(dev|flow)\\b",false)+field("Test text","input","Build with DevFlow. Keep your flow.")+field("Flags","flags","gi",false)+actions([["test","Find matches",true]])+result();warning="Runs in an isolated Web Worker with a 250 ms timeout and input limits. Complex patterns may time out; use simpler patterns and smaller test inputs.";break;
+case"regex":body=field("Regular expression","pattern","\\b(dev|flow)\\b",false)+field("Test text","input","Build with DevFlow. Keep your flow.")+field("Flags","flags","gi",false)+actions([["test","Find matches",true]])+result();warning="Runs in an isolated Web Worker with a 500 ms timeout and input limits. Complex patterns may time out; use simpler patterns and smaller test inputs.";break;
 case"diff":body=field("Original text","left","one\ntwo\nthree")+field("Changed text","right","one\n2\nthree\nfour")+actions([["compare","Compare lines",true]])+result();break;
 case"html":body=field("Text / entities","input","<hello & goodbye>",false)+actions([["encode","Encode entities",true],["decode","Decode entities"]])+result();break;
 case"color":body=field("HEX or RGB color","input","#A6F36B",false)+actions([["convert","Convert color",true]])+result();break;
-case"markdown":body=field("Markdown source","input","# Hello\n\nWrite **clear** docs.\n\n- Keep it simple\n- Ship carefully")+actions([["preview","Create safe preview",true]])+result();warning="This is a small plain-text preview, not a full Markdown renderer. Raw HTML is not rendered or executed.";break;
+case"markdown":body=field("Markdown source","input","# Hello\n\nWrite **clear** docs.\n\n- Keep it simple\n- Ship carefully")+actions([["preview","Create text preview",true]])+result();warning="This is a small plain-text preview, not a full Markdown renderer. Raw HTML is not rendered or executed.";break;
 case"http":body=field("Search status code or phrase","query","",false)+'<div id="status-results" class="result"></div>';break;
 }
 $("tool-panel").innerHTML='<div class="tool-heading"><div class="tool-title-wrap"><span class="tool-large-icon">'+escapeHTML(t.icon)+'</span><div><h2>'+escapeHTML(t.name)+'</h2><p>'+escapeHTML(t.desc)+'</p></div></div><span class="tool-category">'+escapeHTML(t.group.toUpperCase())+'</span></div>'+body+(warning?notice('<strong>Safety note</strong> · '+escapeHTML(warning)):"");
@@ -58,7 +58,7 @@ if(regexButton)regexButton.addEventListener("click",()=>{
   const worker=new Worker(new URL("./regex-worker.js",import.meta.url),{type:"module"});
   let finished=false;
   const finish=(value,error=false)=>{if(finished)return;finished=true;clearTimeout(timer);worker.terminate();regexButton.disabled=false;regexButton.textContent="Find matches";show(value,error)};
-  const timer=setTimeout(()=>finish("Regex evaluation timed out (250 ms). Try a simpler pattern or smaller input.",true),250);
+  const timer=setTimeout(()=>finish("Regex evaluation timed out (500 ms). Try a simpler pattern or smaller input.",true),500);
   worker.onmessage=e=>finish(e.data.error?e.data.error:e.data.result,Boolean(e.data.error));
   worker.onerror=()=>finish("Regex worker failed. Check the pattern and try again.",true);
   worker.postMessage({pattern,flags,text:textValue});
