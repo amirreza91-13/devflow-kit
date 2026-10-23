@@ -32,7 +32,7 @@ DevFlow Kit collects common formatting, encoding, conversion, inspection, compar
 | Regex Tester | Inspect matches and capture groups |
 | Text Diff | Line-level additions and removals |
 | HTML Entity Converter | Encode/decode common named and numeric entities |
-| CSS Color Converter | Convert HEX/RGB to HEX, RGB and HSL |
+| CSS Color Converter | Convert HEX/RGB/HSL to HEX, RGB and HSL |
 | Markdown Preview | Plain-text preview for a limited Markdown subset |
 | HTTP Status Codes | Search a curated list of common response codes |
 
