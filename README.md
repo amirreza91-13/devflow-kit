@@ -1,79 +1,94 @@
+# DevFlow Kit
+
 <div align="center">
 
 <img src="assets/logo.svg" width="84" alt="DevFlow Kit logo">
 
-# DevFlow Kit
-
 ### Small tools. Smoother flow.
 
-**A privacy-first collection of everyday developer utilities that run directly in your browser.**
+**Thirteen everyday developer utilities in a privacy-first, browser-based workspace.**
 
-[Open the source](https://github.com/amirreza91-13/devflow-kit) · [Report an issue](https://github.com/amirreza91-13/devflow-kit/issues)
+[Repository](https://github.com/amirreza91-13/devflow-kit) · [Issues](https://github.com/amirreza91-13/devflow-kit/issues)
 
 </div>
 
 ---
 
-## Why DevFlow Kit?
+## What is it?
 
-Small repetitive tasks can interrupt a developer's flow. DevFlow Kit brings common formatting, encoding, conversion, inspection, and reference utilities into one lightweight interface—with no account and no application backend.
+DevFlow Kit collects common formatting, encoding, conversion, inspection, comparison and reference tasks in one responsive interface. It is a static web application: no account, app server, database, framework runtime or third-party JavaScript library is required.
 
 ## Utilities
 
-| Utility | What it does |
+| Utility | Capabilities |
 |---|---|
-| JSON Formatter | Format and validate JSON |
-| URL Encoder / Decoder | Encode or decode URL components |
-| JWT Decoder | Read JWT header and payload (does **not** verify signatures) |
-| UUID Generator | Generate UUID v4 values with the browser crypto API |
-| Base64 | UTF-8-aware Base64 encoding and decoding |
-| Unix Timestamp | Convert seconds or milliseconds to ISO and local dates |
+| JSON Formatter | Validate, pretty-print and minify JSON |
+| URL Encoder / Decoder | Encode/decode URL components |
+| JWT Decoder | Decode header and payload for inspection |
+| UUID Generator | Generate UUID v4 identifiers using browser cryptography |
+| Base64 | UTF-8-safe Base64 encoding and decoding |
+| Unix Timestamp | Convert seconds/milliseconds to ISO and local time |
 | Text Case Converter | camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE |
 | Regex Tester | Inspect matches and capture groups |
-| Text Diff | Compare lines with additions and removals |
-| HTML Entity Converter | Encode/decode common HTML entities |
-| CSS Color Converter | HEX/RGB input with HEX, RGB, and HSL output |
-| Markdown Preview | Plain-text preview of a small Markdown subset |
-| HTTP Status Reference | Search common HTTP status codes |
+| Text Diff | Line-level additions and removals |
+| HTML Entity Converter | Encode/decode common named and numeric entities |
+| CSS Color Converter | Convert HEX/RGB to HEX, RGB and HSL |
+| Markdown Preview | Plain-text preview for a limited Markdown subset |
+| HTTP Status Codes | Search a curated list of common response codes |
 
 ## Privacy and security
 
-- Utilities are implemented client-side; this app does not intentionally send entered tool data to an application server.
-- Do not paste secrets, access tokens, private keys, or sensitive production data into any browser utility unless you understand the risks.
-- JWT decoding is **not** JWT validation. A decoded payload can be forged and must not be trusted without server-side signature and claim validation.
-- Regex patterns can be computationally expensive. Use patterns and inputs you trust.
-- This project is a developer aid, not a security certification.
+- Inputs are processed in the browser; the app has no application backend and does not intentionally transmit tool inputs.
+- Avoid entering passwords, private keys, production credentials, or sensitive customer data into any online utility.
+- **JWT decoding is not JWT verification.** This tool does not verify signatures or validate issuer, audience, expiry, or other claims. Decoded data is untrusted.
+- Regular expressions can cause excessive CPU use with pathological patterns. Keep patterns and input sizes reasonable.
+- UUIDs use the Web Crypto API rather than Math.random().
+- The Markdown tool emits plain text and does not render arbitrary HTML.
 
 ## Run locally
 
-No build step or package installation is required for the current static version.
+Requirements: a modern browser. Node.js 20+ is needed only for automated tests.
 
-1. Download or clone this repository.
-2. Open `index.html` in a modern browser.
-3. For browser APIs that require a secure context, use localhost or HTTPS.
+1. Clone or download this repository.
+2. Serve the folder over localhost (recommended for browser security APIs), for example with `npx serve .`.
+3. Open the local URL printed by the server.
 
-## Project structure
+No production build or package installation is needed for the static app itself.
+
+## Development
+
+```bash
+npm run check
+npm test
+```
+
+The tests use Node's built-in test runner and cover core transformations. They do not replace manual browser checks of the UI.
+
+## Structure
 
 ```text
 devflow-kit/
-├── assets/
-│   └── logo.svg
-├── .github/
-│   └── workflows/
-│       └── pages.yml
+├── .github/workflows/pages.yml
+├── assets/logo.svg
+├── src/
+│   ├── app.js
+│   └── core.js
+├── tests/core.test.mjs
 ├── index.html
+├── styles.css
+├── package.json
 ├── LICENSE
 └── README.md
 ```
 
-## Deployment
+## GitHub Pages
 
-The repository includes a GitHub Actions workflow for publishing the static site to GitHub Pages. In the repository settings, enable Pages with **GitHub Actions** as the build and deployment source. The first run may require that setting to be saved.
+The workflow runs syntax checks and unit tests before deployment on pushes to main. To publish, open **Settings → Pages** and select **GitHub Actions** as the source if it is not already enabled. The first deployment can take a few minutes.
 
-## Testing status
+## Current quality status
 
-This initial repository upload has not yet been verified by an automated test suite. The workflow checks out the repository and deploys the static site; it does **not** constitute functional test coverage. Please test each utility in a browser before relying on it for important work.
+The repository includes automated unit tests for core functions and CI checks. Check the Actions tab for the actual latest run result before describing a release as verified. A passing unit suite does not prove every browser interaction has been manually tested.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
