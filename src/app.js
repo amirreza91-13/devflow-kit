@@ -50,7 +50,19 @@ if(active==="jwt")run("decode",()=>{const v=core.decodeJWT($("input").value);ret
 run("generate",()=>core.generateUUIDs(Number($("count").value)).join("\n"));
 run("convert",()=>active==="time"?core.convertTimestamp($("input").value,$("unit").value):active==="case"?core.convertCase($("input").value,$("style").value):core.parseColor($("input").value));
 run("now",()=>{ $("input").value=$("unit").value==="s"?Math.floor(Date.now()/1000):Date.now();return core.convertTimestamp($("input").value,$("unit").value)});
-run("test",()=>core.findRegexMatches($("pattern").value,$("flags").value,$("input").value));
+const regexButton=$("test");
+if(regexButton)regexButton.addEventListener("click",()=>{
+  const pattern=$("pattern").value,flags=$("flags").value,textValue=$("input").value;
+  if(pattern.length>500||textValue.length>100000){show("Pattern limit: 500 characters. Input limit: 100,000 characters.",true);return}
+  regexButton.disabled=true;regexButton.textContent="Testing…";
+  const worker=new Worker(new URL("./regex-worker.js",import.meta.url),{type:"module"});
+  let finished=false;
+  const finish=(value,error=false)=>{if(finished)return;finished=true;clearTimeout(timer);worker.terminate();regexButton.disabled=false;regexButton.textContent="Find matches";show(value,error)};
+  const timer=setTimeout(()=>finish("Regex evaluation timed out (250 ms). Try a simpler pattern or smaller input.",true),250);
+  worker.onmessage=e=>finish(e.data.error?e.data.error:e.data.result,Boolean(e.data.error));
+  worker.onerror=()=>finish("Regex worker failed. Check the pattern and try again.",true);
+  worker.postMessage({pattern,flags,text:textValue});
+});
 run("compare",()=>core.diffLines($("left").value,$("right").value).map(x=>({same:"  ",added:"+ ",removed:"- "}[x.type]+x.text)).join("\n"));
 run("preview",()=>core.markdownToPlainPreview($("input").value));
 if(active==="http"){const update=()=>{const q=$("query").value.toLowerCase();const rows=core.HTTP_STATUS.filter(([c,n,d])=>(c+" "+n+" "+d).toLowerCase().includes(q));$("status-results").innerHTML=rows.length?rows.map(([c,n,d])=>'<div class="status-item"><span class="status-code">'+c+'</span><span><span>'+escapeHTML(n)+'</span><span class="status-desc">'+escapeHTML(d)+'</span></span></div>').join(""):'No matching status codes.'};$("query").addEventListener("input",update);update()}
