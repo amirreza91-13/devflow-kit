@@ -41,7 +41,7 @@ DevFlow Kit collects common formatting, encoding, conversion, inspection, compar
 - Inputs are processed in the browser; the app has no application backend and does not intentionally transmit tool inputs.
 - Avoid entering passwords, private keys, production credentials, or sensitive customer data into any online utility.
 - **JWT decoding is not JWT verification.** This tool does not verify signatures or validate issuer, audience, expiry, or other claims. Decoded data is untrusted.
-- Regular expressions can cause excessive CPU use with pathological patterns. Keep patterns and input sizes reasonable.
+- Regex evaluation runs in a dedicated Web Worker with a 250 ms timeout and input limits. This reduces the risk of a slow pattern freezing the interface, but complex expressions can still time out.
 - UUIDs use the Web Crypto API rather than Math.random().
 - The Markdown tool emits plain text and does not render arbitrary HTML.
 
@@ -62,7 +62,7 @@ npm run check
 npm test
 ```
 
-The tests use Node's built-in test runner and cover core transformations. They do not replace manual browser checks of the UI.
+The tests use Node's built-in test runner and cover core transformations plus important edge cases. CI syntax-checks the app, core utilities and regex worker. Automated tests do not replace manual browser checks of the UI.
 
 ## Structure
 
@@ -72,7 +72,8 @@ devflow-kit/
 ├── assets/logo.svg
 ├── src/
 │   ├── app.js
-│   └── core.js
+│   ├── core.js
+│   └── regex-worker.js
 ├── tests/core.test.mjs
 ├── index.html
 ├── styles.css
