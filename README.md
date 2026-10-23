@@ -2,69 +2,133 @@
 
 <div align="center">
 
-<img src="assets/logo.svg" width="84" alt="DevFlow Kit logo">
+<img src="assets/logo.svg" width="104" alt="DevFlow Kit logo">
 
-### Small tools. Smoother flow.
+# Less busywork. More building.
 
-**Thirteen everyday developer utilities in a privacy-first, browser-based workspace.**
+**A focused, privacy-first workspace for everyday developer tasks.**  
+Thirteen practical utilities. One lightweight interface. No account. No app backend.
 
-[Repository](https://github.com/amirreza91-13/devflow-kit) · [Issues](https://github.com/amirreza91-13/devflow-kit/issues)
+<p>
+  <a href="https://github.com/amirreza91-13/devflow-kit/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/amirreza91-13/devflow-kit/validate.yml?style=for-the-badge&label=CI" alt="CI status"></a>
+  <img src="https://img.shields.io/badge/JavaScript-ES%20Modules-F7DF1E?style=for-the-badge&logo=javascript&logoColor=111111" alt="JavaScript">
+  <img src="https://img.shields.io/badge/HTML5-semantic-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
+  <img src="https://img.shields.io/badge/CSS3-responsive-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/Node.js-tests-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/License-MIT-A6F36B?style=for-the-badge" alt="MIT License">
+</p>
+
+[Explore the code](https://github.com/amirreza91-13/devflow-kit) · [Report a bug](https://github.com/amirreza91-13/devflow-kit/issues) · [Request a utility](https://github.com/amirreza91-13/devflow-kit/issues/new)
 
 </div>
 
 ---
 
-## What is it?
+## ✦ The idea
 
-DevFlow Kit collects common formatting, encoding, conversion, inspection, comparison and reference tasks in one responsive interface. It is a static web application: no account, app server, database, framework runtime or third-party JavaScript library is required.
+Developers constantly switch between small utilities to format data, inspect tokens, convert values, and compare text. DevFlow Kit brings these everyday tasks into one calm, responsive workspace.
 
-## Utilities
+It is deliberately built with **vanilla JavaScript, semantic HTML, and CSS**—without a frontend framework, external runtime dependency, application server, database, or account system.
 
-| Utility | Capabilities |
+## ⚡ The toolkit
+
+| Utility | What it does |
 |---|---|
-| JSON Formatter | Validate, pretty-print and minify JSON |
-| URL Encoder / Decoder | Encode/decode URL components |
-| JWT Decoder | Decode header and payload for inspection |
-| UUID Generator | Generate UUID v4 identifiers using browser cryptography |
-| Base64 | UTF-8-safe Base64 encoding and decoding |
-| Unix Timestamp | Convert seconds/milliseconds to ISO and local time |
-| Text Case Converter | camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE |
-| Regex Tester | Inspect matches and capture groups |
-| Text Diff | Line-level additions and removals |
-| HTML Entity Converter | Encode/decode common named and numeric entities |
-| CSS Color Converter | Convert HEX/RGB/HSL to HEX, RGB and HSL |
-| Markdown Preview | Plain-text preview for a limited Markdown subset |
-| HTTP Status Codes | Search a curated list of common response codes |
+| **JSON Formatter** | Validate, pretty-print, and minify JSON |
+| **URL Encoder / Decoder** | Encode or decode URL components |
+| **JWT Decoder** | Inspect a token's header and payload without claiming to verify it |
+| **UUID Generator** | Generate UUID v4 identifiers using browser cryptography |
+| **Base64 Encoder / Decoder** | Convert UTF-8 text to and from Base64 |
+| **Unix Timestamp** | Convert seconds or milliseconds into readable dates |
+| **Text Case Converter** | Convert between camelCase, PascalCase, snake_case, kebab-case, and CONSTANT_CASE |
+| **Regex Tester** | Inspect matches and capture groups in a worker with a timeout |
+| **Text Diff** | Compare two texts line by line |
+| **HTML Entity Converter** | Encode and decode common HTML entities |
+| **CSS Color Converter** | Convert HEX, RGB, and HSL colors |
+| **Markdown Preview** | Preview a deliberately limited, safe subset of Markdown as plain text |
+| **HTTP Status Reference** | Search common HTTP response codes |
 
-## Privacy and security
+## ◈ Design principles
 
-- Inputs are processed in the browser; the app has no application backend and does not intentionally transmit tool inputs.
-- Avoid entering passwords, private keys, production credentials, or sensitive customer data into any online utility.
-- **JWT decoding is not JWT verification.** This tool does not verify signatures or validate issuer, audience, expiry, or other claims. Decoded data is untrusted.
-- Regex evaluation runs in a dedicated Web Worker with a 500 ms timeout and input limits. This reduces the risk of a slow pattern freezing the interface, but complex expressions can still time out.
-- UUIDs use the Web Crypto API rather than Math.random().
-- The Markdown tool emits plain text and does not render arbitrary HTML.
+- **Privacy-first:** transformations happen in your browser; the app has no application backend and does not intentionally transmit tool inputs.
+- **Small by design:** plain HTML, CSS, and JavaScript—no framework runtime or production build step.
+- **Useful over flashy:** searchable utilities, consistent controls, keyboard-friendly navigation, and responsive layouts.
+- **Security-aware:** clear limitations for JWT decoding, bounded regex inputs, and no arbitrary HTML rendering in the Markdown preview.
+- **Testable:** core transformations are covered by Node's built-in test runner and checked in GitHub Actions.
 
-## Run locally
+## 🛠 Technology stack
 
-Requirements: a modern browser. Node.js 20+ is needed only for automated tests.
+<div align="center">
 
-1. Clone or download this repository.
-2. Serve the folder over localhost (recommended for browser security APIs), for example with `npx serve .`.
-3. Open the local URL printed by the server.
+| Technology | Role |
+|:--:|---|
+| <img src="https://cdn.simpleicons.org/html5/E34F26" width="34" alt="HTML5"> **HTML5** | Semantic application structure |
+| <img src="https://cdn.simpleicons.org/css3/1572B6" width="34" alt="CSS3"> **CSS3** | Responsive layout and visual system |
+| <img src="https://cdn.simpleicons.org/javascript/F7DF1E" width="34" alt="JavaScript"> **JavaScript** | Utilities and interface behavior |
+| <img src="https://cdn.simpleicons.org/nodedotjs/339933" width="34" alt="Node.js"> **Node.js** | Syntax checks and automated tests |
+| <img src="https://cdn.simpleicons.org/github/FFFFFF" width="34" alt="GitHub" onerror="this.style.display='none'"> **GitHub Actions** | Continuous integration |
+| <img src="assets/logo.svg" width="34" alt="DevFlow Kit"> **Web APIs** | Clipboard, Web Crypto, Workers, TextEncoder |
 
-No production build or package installation is needed for the static app itself.
+</div>
 
-## Development
+## 🚀 Run it locally
+
+The app uses JavaScript ES modules and a Web Worker. **Do not open `index.html` directly as a `file://` URL**: browsers commonly block module imports and workers in that context, which can leave the interface stuck on “Loading tools…”.
+
+### Option A — Python (no package installation)
+
+1. Download and extract the ZIP, or clone this repository.
+2. Open PowerShell in the project folder.
+3. Run:
+
+   ```powershell
+   py -m http.server 8000
+   ```
+
+   If `py` is unavailable, try:
+
+   ```powershell
+   python -m http.server 8000
+   ```
+
+4. Open **http://localhost:8000** in your browser.
+5. Stop the local server with `Ctrl+C` when finished.
+
+### Option B — Node.js
+
+With Node.js installed, run:
+
+```powershell
+npx --yes serve .
+```
+
+Open the local URL printed in the terminal.
+
+## 🧪 Development and tests
+
+Requirements: Node.js 20 or newer. The app itself does not need a build step or dependency installation.
 
 ```bash
 npm run check
 npm test
 ```
 
-The tests use Node's built-in test runner and cover core transformations plus important edge cases. CI syntax-checks the app, core utilities and regex worker. Automated tests do not replace manual browser checks of the UI.
+- `npm run check` checks JavaScript syntax.
+- `npm test` runs the core utility tests with Node's built-in test runner.
+- GitHub Actions runs both commands for pushes to `main`, pull requests, and manual workflow dispatch.
 
-## Structure
+The validation workflow **does not deploy or publish the website**.
+
+## 🔐 Privacy and security notes
+
+- Inputs are processed in the browser; the app has no application backend and does not intentionally transmit tool inputs.
+- Avoid entering passwords, private keys, production credentials, or sensitive customer data into any browser utility unless you understand the risk.
+- **JWT decoding is not JWT verification.** Signatures, issuer, audience, expiry, and authenticity are not verified. Decoded claims are untrusted.
+- Regex matching runs in a dedicated Web Worker with a 500 ms timeout and input limits. This reduces the chance of a slow pattern freezing the interface, but cannot make every expression harmless.
+- UUIDs use the Web Crypto API rather than `Math.random()`.
+- The Markdown utility produces plain text and does not render arbitrary HTML.
+
+## 🗂 Project structure
 
 ```text
 devflow-kit/
@@ -78,18 +142,13 @@ devflow-kit/
 ├── index.html
 ├── styles.css
 ├── package.json
-├── LICENSE
-└── README.md
+└── LICENSE
 ```
 
-## Continuous integration
+## 🧭 Project status
 
-GitHub Actions runs syntax checks and unit tests on pushes to `main`, pull requests, and manual workflow dispatch. The workflow validates code only; it does not publish or deploy the application.
+DevFlow Kit is a lightweight utility project with automated checks and unit tests. Passing tests confirm the covered cases; they do not replace manual testing of every browser interaction.
 
-## Current quality status
+## 📄 License
 
-The repository includes automated unit tests for core functions and CI checks. Check the Actions tab for the actual latest run result before describing a release as verified. A passing unit suite does not prove every browser interaction has been manually tested.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+Released under the MIT License. See [LICENSE](LICENSE).
