@@ -68,7 +68,7 @@ The tests use Node's built-in test runner and cover core transformations plus im
 
 ```text
 devflow-kit/
-├── .github/workflows/pages.yml
+├── .github/workflows/validate.yml
 ├── assets/logo.svg
 ├── src/
 │   ├── app.js
@@ -82,9 +82,9 @@ devflow-kit/
 └── README.md
 ```
 
-## GitHub Pages
+## Continuous integration
 
-The current GitHub Actions workflow runs syntax checks and unit tests on pushes to `main` and pull requests. It does **not** deploy the site. Publishing through GitHub Pages still requires enabling Pages in repository settings and adding a deployment workflow.
+GitHub Actions runs syntax checks and unit tests on pushes to `main`, pull requests, and manual workflow dispatch. The workflow validates code only; it does not publish or deploy the application.
 
 ## Current quality status
 
